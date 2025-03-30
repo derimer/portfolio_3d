@@ -19,27 +19,35 @@ const Contact = () => {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value
+      [name]: value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation simple
+    if (!form.name || !form.email || !form.message) {
+      alert("Veuillez remplir tous les champs.");
+      return;
+    }
+
     setLoading(true);
 
-    emailjs.send(
-      process.env.REACT_APP_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_EMAILJS_TEMPLATEID,
-      {
-        from_name: form.name,
-        to_name: "JRD",
-        from_email: form.email,
-        to_email: process.env.REACT_APP_EMAILJS_RECEIVERID || "jderimer@gmail.com",
-        message: form.message,
-      },
-      process.env.REACT_APP_EMAILJS_USERID
-    )
-    .then(() => {
+    try {
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATEID,
+        {
+          from_name: form.name,
+          to_name: "JRD",
+          from_email: form.email,
+          to_email: process.env.REACT_APP_EMAILJS_RECEIVERID || "jderimer@gmail.com",
+          message: form.message,
+        },
+        process.env.REACT_APP_EMAILJS_USERID
+      );
+
       setLoading(false);
       alert('Message envoyé avec succès !');
       setForm({
@@ -47,54 +55,55 @@ const Contact = () => {
         email: '',
         message: '',
       });
-    })
-    .catch((error) => {
+    } catch (error) {
       setLoading(false);
       console.error('Erreur:', error);
-      alert("Une erreur s'est produite. Veuillez réessayer.");
-    });
+      alert("Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.");
+    }
   };
 
   return (
     <div className='xl:mt-12 xl:flex-row flex-col-reverse flex gap-10 overflow-hidden'>
       <motion.div
-        variants={slideIn("left","tween",0.2,1)}
+        variants={slideIn("left", "tween", 0.2, 1)}
         className='flex-[0.75] bg-black-100 p-8 rounded-2xl'
       >
-        <p className={styles.sectionSubText}>Contactez moi</p>
+        <p className={styles.sectionSubText}>Contactez-moi</p>
         <h3 className={styles.sectionHeadText}>Contact.</h3>
-        
-        <form 
-          ref={formRef} 
-          onSubmit={handleSubmit} 
+
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
           className='mt-12 flex flex-col gap-8'
         >
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Votre nom</span>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               placeholder="Quel est votre nom ?"
               className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              aria-label="Votre nom"
               required
             />
           </label>
-          
+
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Votre email</span>
-            <input 
-              type="email" 
+            <input
+              type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
               placeholder="Quel est votre email ?"
               className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              aria-label="Votre email"
               required
             />
           </label>
-          
+
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Votre message</span>
             <textarea
@@ -104,11 +113,12 @@ const Contact = () => {
               onChange={handleChange}
               placeholder="Quel est votre message ?"
               className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              aria-label="Votre message"
               required
             />
           </label>
-          
-          <button 
+
+          <button
             type="submit"
             className='bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl'
             disabled={loading}
@@ -118,11 +128,11 @@ const Contact = () => {
         </form>
       </motion.div>
 
-      <motion.div 
-        variants={slideIn("right","tween",0.2,1)}
+      <motion.div
+        variants={slideIn("right", "tween", 0.2, 1)}
         className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]'
       >
-        <EarthCanvas/>
+        <EarthCanvas />
       </motion.div>
     </div>
   );
