@@ -26,7 +26,6 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation simple
     if (!form.name || !form.email || !form.message) {
       alert("Veuillez remplir tous les champs.");
       return;
@@ -36,25 +35,21 @@ const Contact = () => {
 
     try {
       await emailjs.send(
-        process.env.REACT_APP_EMAILJS_SERVICE_ID,
-        process.env.REACT_APP_EMAILJS_TEMPLATEID,
+        "service_74t680m",  // Remplace par ton Service ID
+        "template_lyw4wik", // Remplace par ton Template ID
         {
           from_name: form.name,
           to_name: "JRD",
           from_email: form.email,
-          to_email: process.env.REACT_APP_EMAILJS_RECEIVERID || "jderimer@gmail.com",
+          to_email: "jderimer@gmail.com",
           message: form.message,
         },
-        process.env.REACT_APP_EMAILJS_USERID
+        "VscDoTgM9UhLv-Kzg" // Remplace par ta Public Key
       );
 
       setLoading(false);
       alert('Message envoyé avec succès !');
-      setForm({
-        name: '',
-        email: '',
-        message: '',
-      });
+      setForm({ name: '', email: '', message: '' });
     } catch (error) {
       setLoading(false);
       console.error('Erreur:', error);
@@ -64,18 +59,11 @@ const Contact = () => {
 
   return (
     <div className='xl:mt-12 xl:flex-row flex-col-reverse flex gap-10 overflow-hidden'>
-      <motion.div
-        variants={slideIn("left", "tween", 0.2, 1)}
-        className='flex-[0.75] bg-black-100 p-8 rounded-2xl'
-      >
+      <motion.div variants={slideIn("left", "tween", 0.2, 1)} className='flex-[0.75] bg-black-100 p-8 rounded-2xl'>
         <p className={styles.sectionSubText}>Contactez-moi</p>
         <h3 className={styles.sectionHeadText}>Contact.</h3>
 
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className='mt-12 flex flex-col gap-8'
-        >
+        <form ref={formRef} onSubmit={handleSubmit} className='mt-12 flex flex-col gap-8'>
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Votre nom</span>
             <input
@@ -118,20 +106,13 @@ const Contact = () => {
             />
           </label>
 
-          <button
-            type="submit"
-            className='bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl'
-            disabled={loading}
-          >
+          <button type="submit" className='bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl' disabled={loading}>
             {loading ? 'Envoi...' : 'Envoyer'}
           </button>
         </form>
       </motion.div>
 
-      <motion.div
-        variants={slideIn("right", "tween", 0.2, 1)}
-        className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]'
-      >
+      <motion.div variants={slideIn("right", "tween", 0.2, 1)} className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]'>
         <EarthCanvas />
       </motion.div>
     </div>
